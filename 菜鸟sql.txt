@@ -1,0 +1,431 @@
+select distinct country from websites
+select country from websites limit 2
+select device_id as user_infos_example from user_profile limit 2
+select device_id, gender, age, university from user_profile where age > 24
+select * from websites where country = 'CN'
+select * from websites where id = 1
+select * from emp where comm is null
+select * from emp where sal between 1500 and 3000
+select * from websites where alexa between 1 and 20
+select * from websites where alexa not between 1 and 20
+select * from websites where (alexa between 1 and 20) and country not in ('USA' and 'IND')
+select * from websites where name between 'A' and 'H'
+select * from websites where name not between 'A' and 'H'
+select * from access_log where date between '2016-05-10' and '2016-05-14'
+select * from emp where sal in (5000,3000,1500)
+select * from websites where name in ('Google', '菜鸟教程')
+select * from emp where ename like 'M%'
+select * from emp where ename like 'M_'
+select * from emp where enmae like '%M%'
+select * from emp where ename like '%M_'
+select * from websites where country = 'USA' or country = 'CN'
+select * from websites where alexa > 15 and (country = 'CN' or country = 'USA')
+select * from websites order by alexa
+select * from websites order by alexa desc
+select * from websites order by country, alexa
+insert into websites (name, url ,alexa, country) values ('百度', 'https://www.baidu.com/', 'CN')
+insert into websites values ('百度', 'https://www.baidu.com/',  '4', 'CN')
+update websites set alexa = '5000', country = 'USA' where name = '菜鸟教程'
+delete from websites where name = 'facebook' and country = 'USA'
+delete * from websites
+select * from persons limit 5
+select top 50 percent * from websites
+select top 50 percent * from websites order by id desc
+select * from websites where name like '%k'
+select * from websites where name like 'G%'
+select * from websites where name like '%oo%'
+select * from websites where name not like '%oo%'
+select * from websites where url like 'https%'
+select * from websites where name like '_o%'
+select * from websites where name like 'G_o_le'
+select * from websites where name regexp '^[GFs]'
+select * from websites where name regexp '^[A-H]'
+select * from websites where name regexp '^[^A-H]'
+select name as n, country as c from websites
+select name, concat(url, ',', alexa, ',', country) as site_info from websites
+select * into websitesBackup from websites
+select name, url into websitesBackup from websites
+select * into websitesBackup from websites where country = 'CN'
+
+select w.name, w.url, a.count, a.date from websites as w, access_log as a 
+where a.site_id = w.id and w.name = '菜鸟教程'
+
+SELECT Websites.name, Websites.url, access_log.count, access_log.date
+FROM Websites, access_log
+WHERE Websites.id=access_log.site_id and Websites.name="菜鸟教程";
+
+select websites.id, websites.name, access_log.count, access_log.date
+from websites 
+inner join access_log 
+on websites.id = access_log.site_id
+
+select websites.name, access_log.count, access_log.date
+from websites
+inner join access_log
+on websites.id = access_log.site_id
+order by access_log.count
+
+select websites.name, access_log.count, access_log.date
+from websites
+left join access_log
+on websites.id = access_log.site_id
+order by access_log.count desc
+
+select websites.name, access_log.count, access_log.date
+from websites
+right join access_log
+on access_log.site_id = websites.id
+order by access_log.count desc
+
+select websites.name, access_log.count, access_log.date
+from websites
+full outer join access_log
+on websites.id = access_log.site_id
+order by access_log.count desc
+
+--union可以合并两个或多个select语句的结果，这个结果必须是相同性质的
+select country from websites
+union
+select country from apps
+order by country
+
+select country fron websites
+union all
+select country from apps
+order by country
+
+select country, name from websites where country = 'CN'
+union all
+select country, app_name from apps where country = 'CN'
+order by country
+
+select websites.name, access_log.count, access_log.date
+into websitesBackup
+from websites
+left join access_log
+on websites.id = access_log.site_id
+
+insert into websites (name, country)
+select app_name, country from apps
+
+insert into websites (name, country)
+select app_name, country from apps
+where id = 1
+
+create database my_db
+
+create table persons
+(
+    personID int,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+)
+
+create table persons
+(
+    personID int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+    primary key (personID)
+)
+
+create table persons
+(
+    personID int not null primary key,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+)
+
+create table if not exists persons
+(
+    id bigint auto_increment comment '主键',
+    name varchar(20) not null comment '人员姓名',
+    work_id bigint not null comment '工作id',
+    create_time date default '2021-08-24',
+    primary key(id),
+    foreign key(work_id) references work(id)
+)
+
+create table if not exists work
+(
+    id bigint auto_increment comment '主键',
+    name varchar(20) not null comment '工作名称',
+    create_time date default '2021-08-24',
+    primary key(id)
+)
+
+create table persons
+(
+    id int not null,
+    name varchar(255) not null,
+    age int
+)
+
+alter table persons
+modify age int not null
+
+alter table persons
+modify age int null
+
+create table persons
+(
+    id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+    unique(id)
+)
+
+create table persons
+(
+    id int not null unique,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+)
+
+alter table persons
+add unique id
+
+alter table persons
+drop index id
+
+create table persons
+(
+    id int not null primary key,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+)
+
+create table persons
+(
+    id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+    primary key(id)
+)
+
+create table persons
+(
+    id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+    constraint pk_personid primary key (id, LastName)
+)
+
+alter table persons
+add primary key(id)
+
+alter table persons
+add constraint pk_personid primary key(id, LastName)
+
+alter table persons
+drop primary key
+
+alter table persons
+drop constraint pk_personid
+
+create table orders
+(
+    O_id int not null,
+    orderNo int not null,
+    P_id int,
+    primary key(O_id)
+    foreign key(P_id) references persons(P_id)
+)
+
+create table orders
+(
+    O_id int not null primary key,
+    orderNo int not null,
+    P_id int foreign key references persons(P_id)
+)
+
+alter table orders
+drop foreign key fk_PerOrders
+
+create table persons
+(
+    P_id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255),
+    check (P_id > 0)
+)
+
+create table persons
+(
+    P_id int not null check (P_id > 0),
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+)
+
+create table persons
+(
+    P_id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+    constraint chk_person check (P_id > 0 and City = 'Sandnes')
+)
+
+alter table persons
+add check (P_id > 0)
+
+alter table persons
+add constraint chk_person check check (P_id > 0 and City = 'Sandnes')
+
+alter table persons
+drop constraint chk_person
+
+alter table persons
+drop check chk_person
+
+create table persons
+(
+    P_id int not null,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255) default 'Sandnes'
+)
+
+create table orders
+(
+    O_id int not null,
+    orderNo int not null,
+    P_id int,
+    orderDate date default getdate()
+)
+
+alter table persons
+alter City set default 'sandnes'
+
+alter table persons
+alter city drop default
+
+create index PIndex
+on persons (LastName)
+
+create index PIndex
+on persons (LastName, FirstName)
+
+drop index index_name on table_name
+drop index table_name.index_name
+
+drop table table_name
+
+drop database database_name
+
+truncate table table_name
+
+alter table persons
+add dateOfBirth date
+
+alter table persons
+alter column dateOfBirth year
+
+alter table persons
+drop column dateOfBirth
+
+create table persons
+(
+    id int not null auto_increment,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    city varchar(255),
+    primary key(id)
+)
+
+alter table persons auto_increment = 100
+
+insert into persons (FirstName, LastName)
+values ('Lars', 'Monsen')
+
+
+create table persons
+(
+    id int identity(1,1) primary key,
+    LastName varchar(255) not null,
+    FirstName varchar(255),
+    Address varchar(255),
+    city varchar(255)
+)
+
+create view [Current Product List] as
+select ProductID, ProductName
+from Products
+where Discontinued = No
+
+select * from [Current Product List]
+
+create view[Products Above Average Price] as
+select ProductName, UnitPrice
+from Products
+where UnitPrice > (select avg(UnitPrice) from Products)
+
+select * from [Products Above Average Price]
+
+create view [Category Sales For 1997] as
+select distinct CategoryName, Sum(ProductSales) as CategorySales
+from [Product Sales for 1997]
+group by CategoryName
+
+select * from [Category Sales For 1997]
+
+select * from [Category Sales For 1997]
+where CategoryName = 'Beverages'
+
+create view [Current Product List] as
+select ProductID, ProductName, Category
+from Products
+where Discontinued = No
+
+drop view view_name
+
+NOW()	返回当前的日期和时间
+CURDATE()	返回当前的日期
+CURTIME()	返回当前的时间
+DATE()	提取日期或日期/时间表达式的日期部分
+EXTRACT()	返回日期/时间的单独部分
+DATE_ADD()	向日期添加指定的时间间隔
+DATE_SUB()	从日期减去指定的时间间隔
+DATEDIFF()	返回两个日期之间的天数
+DATE_FORMAT()	用不同的格式显示日期/时间
+
+AVG() - 返回平均值
+COUNT() - 返回行数
+FIRST() - 返回第一个记录的值
+LAST() - 返回最后一个记录的值
+MAX() - 返回最大值
+MIN() - 返回最小值
+SUM() - 返回总和
+
+UCASE() - 将某个字段转换为大写
+LCASE() - 将某个字段转换为小写
+MID() - 从某个文本字段提取字符，MySql 中使用
+SubString(字段，1，end) - 从某个文本字段提取字符
+LEN() - 返回某个文本字段的长度
+ROUND() - 对某个数值字段进行指定小数位数的四舍五入
+NOW() - 返回当前的系统日期和时间
+FORMAT() - 格式化某个字段的显示方式
+
