@@ -1,3 +1,1965 @@
+<<<<<<< HEAD
+=======
+[TOC]
+
+# 帮助命令
+
+## man	使用手册 manual
+
+```shell
+  man
+
+  Format and display manual pages.
+  More information: https://www.man7.org/linux/man-pages/man1/man.1.html.
+
+  - Display the man page for a command:
+    man command
+
+  - Display the man page for a command from section 7:
+    man 7 command
+
+  - Display the path searched for manpages:
+    man --path
+
+  - Display the location of a manpage rather than the manpage itself:
+    man -w command
+
+  - Display the man page using a specific locale:
+    man command --locale=locale
+
+  - Search for manpages containing a search string:
+    man -k "search_string"
+```
+
+
+
+## help	命令帮助 help
+
+- type cd：查看命令的类型，分为内部命令和外部命令
+
+- 外部命令使用举例：ls -help
+
+- 内部命令使用举例：help cd
+
+  
+
+## info	命令详细信息 infomation
+
+- 命令的详细信息
+
+```shell
+  info
+
+  Reads documentation stored in the info format.
+  More information: https://en.wikipedia.org/wiki/Info_(Unix).
+
+  - Start reading top-level directory menu:
+    info
+
+  - Start reading at given menu item node from top-level directory:
+    info menu_item
+
+  - Start reading at second menu item within first menu item manual:
+    info first_menu_item second_menu_item
+```
+
+
+
+## tldr	简略命令手册 
+
+- 简略版的常用命令选项和解释
+
+- 具体安装指令：
+
+  ```shell
+  yum install nodejs
+  yum install npm
+  yum install tldr
+  tldr --update
+  ```
+
+# 文件操作
+
+## ls	打印文件夹内容 list
+
+- ls /root：显示root用户的根目录
+- ls /root /etc：一次显示多个目录
+- ls -l：各列参数的具体含义
+- ls -F：文件夹后面带有/斜杆显示
+- ls -lrt：按照时间倒序形式列出详细文件信息
+- ls -lS：按照文件大小倒序列出文件详细信息
+- ls -R：递归显示文件信息
+- ls -lh /etc：带文件单位显示文件大小信息
+
+- clear、CTRL + L：清理屏幕内容
+
+```shell
+  ls
+
+  List directory contents.
+  More information: https://www.gnu.org/software/coreutils/ls.
+
+  - List files one per line:
+    ls -1
+
+  - List all files, including hidden files:
+    ls -a
+
+  - List all files, with trailing `/` added to directory names:
+    ls -F
+
+  - Long format list (permissions, ownership, size, and modification date) of all files:
+    ls -la
+
+  - Long format list with size displayed using human-readable units (KiB, MiB, GiB):
+    ls -lh
+
+  - Long format list sorted by size (descending):
+    ls -lS
+
+  - Long format list of all files, sorted by modification date (oldest first):
+    ls -ltr
+
+  - Only list directories:
+    ls -d */
+```
+
+
+
+## cd	更改当前目录 change directory
+
+- cd /path/to/...	绝对路径
+  - 根目录下开始算
+- cd ./path/to/...   相对路径
+  - 当前目录开始算，执行结果与cd path/to/...一致
+- cd -
+  - 返回之前的目录
+- cd ~
+  - 返回当前用户的家目录
+
+```shell
+  cd
+
+  Change the current working directory.
+  More information: https://manned.org/cd.
+
+  - Go to the given directory:
+    cd path/to/directory
+
+  - Go to the home directory of the current user:
+    cd
+
+  - Go up to the parent of the current directory:
+    cd ..
+
+  - Go to the previously chosen directory:
+    cd -
+```
+
+
+
+- 网卡设置目录：cd /etc/sysconfig/network-scripts/
+
+
+
+## mkdir	创建文件夹 make directory
+
+- mkdir /directory
+  - 在根目录下创建一个文件夹
+- mkdir directory
+  - 在当前目录下创建一个文件夹.
+- mkdir directory_1 directory_2 directory_3
+  - 一次在当前目录下创建多个文件夹
+- mkdir /a/b/c
+  - 在根目录下的a文件夹中的b文件夹下创建一个c文件夹（a和b都已存在，不存在会报错）
+- mkdir -p /a/b/c
+  - 在根目录下a文件夹中的b文件夹下创建一个c文件夹（a和b可能不存在）
+
+```shell
+  mkdir
+
+  Creates a directory.
+  More information: https://www.gnu.org/software/coreutils/mkdir.
+
+  - Create a directory in current directory or given path:
+    mkdir directory
+
+  - Create multiple directories in the current directory:
+    mkdir directory_1 directory_2 ...
+
+  - Create directories recursively (useful for creating nested dirs):
+    mkdir -p path/to/directory
+```
+
+
+
+## rmdir	删除文件夹 remove directory
+
+- rmdir /directory
+  - 删除根目录下的directory文件夹，只能删除非空目录
+- rmdir -p path/to/directory
+  - 递归删除相关目录
+
+```shell
+  rmdir
+
+  Removes a directory.
+  More information: https://www.gnu.org/software/coreutils/rmdir.
+
+  - Remove directory, provided it is empty. Use `rm -r` to remove non-empty directories:
+    rmdir path/to/directory
+
+  - Remove the target and its parent directories (useful for nested dirs):
+    rmdir -p path/to/directory
+```
+
+
+
+## rm	删除文件或文件夹 remove
+
+- rm path/to/file path/to/another/file
+  - 在任意文件夹下删除目录
+- rm -r /directory
+  - 删除根目录下的directory文件夹，可以删除非空目录，需要确认
+- rm -rf /directory
+  - 删除根目录下的directory文件夹，可以删除非空目录，不需要确认
+
+```shell
+  rm
+
+  Remove files or directories.
+  More information: https://www.gnu.org/software/coreutils/rm.
+
+  - Remove files from arbitrary locations:
+    rm path/to/file path/to/another/file
+
+  - Recursively remove a directory and all its subdirectories:
+    rm -r path/to/directory
+
+  - Forcibly remove a directory, without prompting for confirmation or showing error messages:
+    rm -rf path/to/directory
+
+  - Interactively remove multiple files, with a prompt before every removal:
+    rm -i file(s)
+
+  - Remove files in verbose mode, printing a message for each removed file:
+    rm -v path/to/directory/*
+```
+
+
+
+## mv	移动文件 move
+
+```shell
+  mv
+
+  Move or rename files and directories.
+  More information: https://www.gnu.org/software/coreutils/mv.
+
+  - Move a file to an arbitrary location:
+    mv source target
+
+  - Move files into another directory, keeping the filenames:
+    mv source1 source2 source3 target_directory
+
+  - Do not prompt for confirmation before overwriting existing files:
+    mv -f source target
+
+  - Prompt for confirmation before overwriting existing files, regardless of file permissions:
+    mv -i source target
+
+  - Do not overwrite existing files at the target:
+    mv -n source target
+
+  - Move files in verbose mode, showing files after they are moved:
+    mv -v source target
+```
+
+
+
+## cp	复制文件 copy
+
+```shell
+  cp
+
+  Copy files and directories.
+  More information: https://www.gnu.org/software/coreutils/cp.
+
+  - Copy a file to another location:
+    cp path/to/source_file.ext path/to/target_file.ext
+
+  - Copy a file into another directory, keeping the filename:
+    cp path/to/source_file.ext path/to/target_parent_directory
+
+  - Recursively copy a directory's contents to another location (if the destination exists, the directory is copied inside it):
+    cp -r path/to/source_directory path/to/target_directory
+
+  - Copy a directory recursively, in verbose mode (shows files as they are copied):
+    cp -vr path/to/source_directory path/to/target_directory
+
+  - Copy text files to another location, in interactive mode (prompts user before overwriting):
+    cp -i *.txt path/to/target_directory
+
+  - Follow symbolic links before copying:
+    cp -L link path/to/target_directory
+
+  - Use the full path of source files, creating any missing intermediate directories when copying:
+    cp --parents source/path/to/file path/to/target_file
+```
+
+
+
+## cat	查看文本 concatenate
+
+- 查看文本
+  - cat /root/Desktop/ping.txt
+- 带行数查看文本
+  - cat -n /root/Desktop/ping.txt
+- 将多个文本的内容输出到另一个文本
+  - cat save.txt test.txt > new.txt
+- 将多个文本的内容附加到另一个文本
+  - cat save.txt >> new.txt
+- 输出不可见字符
+  - cat -v -t -e new.txt
+
+```shell
+  cat
+
+  Print and concatenate files.
+  More information: https://www.gnu.org/software/coreutils/cat.
+
+  - Print the contents of a file to the standard output:
+    cat file
+
+  - Concatenate several files into the target file:
+    cat file1 file2 > target_file
+
+  - Append several files into the target file:
+    cat file1 file2 >> target_file
+
+  - Number all output lines:
+    cat -n file
+
+  - Display non-printable and whitespace characters (with `M-` prefix if non-ASCII):
+    cat -v -t -e file
+
+```
+
+## head	查看文本的头部 head
+
+- head /root/Desktop/ping.txt
+  - 显示文件的前十行
+- head -5 /root/Desktop/ping.txt
+  - 显示文件的前五行
+
+```shell
+  head
+
+  Output the first part of files.
+  More information: https://www.gnu.org/software/coreutils/head.
+
+  - Output the first few lines of a file:
+    head --lines count path/to/file
+
+  - Output the first few bytes of a file:
+    head --bytes count path/to/file
+
+  - Output everything but the last few lines of a file:
+    head --lines -count path/to/file
+
+  - Output everything but the last few bytes of a file:
+    head --bytes -count path/to/file
+```
+
+
+
+## tail	查看文件的尾部 tail
+
+- tail /root/Desktop/ping.txt
+  - 查看文件的最后十行
+- tail -5 /root/Desktop/ping.txt
+  - 查看文件的最后五行
+- tail -f /root/Desktop/ping.txt
+  - 实时更新文件尾部内容
+
+```shell
+  tail
+
+  Display the last part of a file.
+  See also: `head`.
+  More information: https://www.gnu.org/software/coreutils/tail.
+
+  - Show last 'count' lines in file:
+    tail --lines count path/to/file
+
+  - Print a file from a specific line number:
+    tail --lines +count path/to/file
+
+  - Print a specific count of bytes from the end of a given file:
+    tail --bytes count path/to/file
+
+  - Print the last lines of a given file and keep reading file until `Ctrl + C`:
+    tail --follow path/to/file
+
+  - Keep reading file until `Ctrl + C`, even if the file is inaccessible:
+    tail --retry --follow path/to/file
+
+  - Show last 'num' lines in 'file' and refresh every 'n' seconds:
+    tail --lines count --sleep-interval seconds --follow path/to/file
+
+```
+
+## wc	统计文本信息 words count
+
+- wc -l /root/Desktop/ping.txt
+  - 统计行数信息
+- wc /root/Desktop/ping.txt
+  - 统计文本的行数、单词数和字符数
+
+```shell
+  wc
+
+  Count lines, words, and bytes.
+  More information: https://www.gnu.org/software/coreutils/wc.
+
+  - Count all lines in a file:
+    wc --lines path/to/file
+
+  - Count all words in a file:
+    wc --words path/to/file
+
+  - Count all bytes in a file:
+    wc --bytes path/to/file
+
+  - Count all characters in a file (taking multi-byte characters into account):
+    wc --chars path/to/file
+
+  - Count all lines, words and bytes from `stdin`:
+    find . | wc
+
+  - Count the length of the longest line in number of characters:
+    wc --max-line-length path/to/file
+
+```
+
+
+
+## more	更多信息 more
+
+```shell
+  more
+
+  Open a file for interactive reading, allowing scrolling and search.
+  More information: https://manned.org/more.
+
+  - Open a file:
+    more path/to/file
+
+  - Open a file displaying from a specific line:
+    more +line_number path/to/file
+
+  - Display help:
+    more --help
+
+  - Go to the next page:
+    <Space>
+
+  - Search for a string (press `n` to go to the next match):
+    /something
+
+  - Exit:
+    q
+
+  - Display help about interactive commands:
+    h
+```
+
+## less 更少信息 less
+
+```shell
+  less
+
+  Open a file for interactive reading, allowing scrolling and search.
+  More information: https://greenwoodsoftware.com/less/.
+
+  - Open a file:
+    less source_file
+
+  - Page down / up:
+    <Space> (down), b (up)
+
+  - Go to end / start of file:
+    G (end), g (start)
+
+  - Forward search for a string (press `n`/`N` to go to next/previous match):
+    /something
+
+  - Backward search for a string (press `n`/`N` to go to next/previous match):
+    ?something
+
+  - Follow the output of the currently opened file:
+    F
+
+  - Open the current file in an editor:
+    v
+
+  - Exit:
+    q
+```
+
+# tar打包和压缩 
+
+## 打包
+
+ - tar cf /root/Desktop/etc-backup.tar /etc
+    - 打包文件
+ - tar czf /root/Desktop/etc-backup.tar.gz /etc
+    - 打包文件，并以gzip压缩
+ - tar cjf /root/Desktop/etc-backup.tar.bz2 /etc
+    - 打包文件，并以bzip2压缩
+
+## 解压
+
+- tar xf ./etc-backup.tar
+  - 把文件解压到当前目录下
+- tar zxf ./etc-backup.tar.gz
+  - 把gzip压缩的文件解压到当前目录下
+- tar jxf ./etc-backup.tar.bz2
+  - 把gzip压缩的文件解压到当前目录下
+- tar jxf ./etc-backup.tar.bz2 -C Desktop/
+  - 把gzip压缩的文件解压到指定目录下
+- tar tvf source.tar
+  - 查看压缩包中的文件
+
+```shell
+  tar
+
+  Archiving utility.
+  Often combined with a compression method, such as gzip or bzip2.
+  More information: https://www.gnu.org/software/tar.
+
+  - [c]reate an archive and write it to a [f]ile:
+    tar cf target.tar file1 file2 file3
+
+  - [c]reate a g[z]ipped archive and write it to a [f]ile:
+    tar czf target.tar.gz file1 file2 file3
+
+  - [c]reate a g[z]ipped archive from a directory using relative paths:
+    tar czf target.tar.gz --directory=path/to/directory .
+
+  - E[x]tract a (compressed) archive [f]ile into the current directory [v]erbosely:
+    tar xvf source.tar[.gz|.bz2|.xz]
+
+  - E[x]tract a (compressed) archive [f]ile into the target directory:
+    tar xf source.tar[.gz|.bz2|.xz] --directory=directory
+
+  - [c]reate a compressed archive and write it to a [f]ile, using [a]rchive suffix to determine the compression program:
+    tar caf target.tar.xz file1 file2 file3
+
+  - Lis[t] the contents of a tar [f]ile [v]erbosely:
+    tar tvf source.tar
+
+  - E[x]tract files matching a pattern from an archive [f]ile:
+    tar xf source.tar 
+```
+
+
+
+# vim
+
+## 正常模式
+
+### 操作范围
+
+| 按键 | 说明                                 |
+| ---- | ------------------------------------ |
+| 0    | 将光标定位到**行首**的位置           |
+| ^    | 同上                                 |
+| $    | 将光标定位到**行尾**的位置           |
+| b    | 将光标定位到光标所在单词的**起始处** |
+| e    | 将光标定位到光标所在单词的**结尾处** |
+| w    | 将光标定位到**下一个单词的起始处**   |
+| gg   | 将光标定位到**文件开头**             |
+| G    | 将光标定位到**文件末尾**             |
+
+### 插入指令
+
+| 按键 | 说明                                         |
+| ---- | -------------------------------------------- |
+| i    | 在光标的**前面**进入插入模式                 |
+| I    | 在光标所在行的**行首**进入插入模式           |
+| a    | 在光标的**后面**进入插入模式                 |
+| A    | 在光标所在行的**行尾**进入插入模式           |
+| o    | 在光标所在行的**下方**插入空行并进入插入模式 |
+| O    | 在光标所在行的**上方**插入空行并进入插入模式 |
+| s    | 删除光标**指定**的字符并进入插入模式         |
+| S    | 将光标所在行**清除**并进入插入模式           |
+
+### 删除指令
+
+| 按键 | 说明                                                     |
+| ---- | -------------------------------------------------------- |
+| d0   | 删除光标从当前位置（不包括）到该行**行首**的所有字符     |
+| d^   | 同上                                                     |
+| d$   | 删除光标从当前位置（包括）到该行**行尾**的所有字符       |
+| db   | 删除光标从当前位置（不包括）到**单词起始处**的所有字符   |
+| de   | 删除光标从当前位置（包括）到**单词结尾处**的所有字符     |
+| dw   | 删除光标从当前位置（包括）到**下个单词起始处**的所有字符 |
+| dh   | 删除光标**前边**一个字符                                 |
+| dl   | 删除光标**指定**的字符                                   |
+| dj   | 删除光标所在行以及**下一行**的所有字符                   |
+| dk   | 删除光标所在行以及**上一行**的所有字符                   |
+| dd   | 删除光标**所在行**的字符                                 |
+| dgg  | 删除光标所在行到**文件开头**的所有字符                   |
+| dG   | 删除光标所在行到**文件末尾**的所有字符                   |
+
+### 撤销指令
+
+| 按键     | 说明             |
+| -------- | ---------------- |
+| u        | 撤销最后一次修改 |
+| U        | 撤销对整行的修改 |
+| ctrl + r | 恢复撤销的内容   |
+
+
+
+## 命令模式
+
+```
+w /root/Desktop/save.txt：保存路径
+wq：默认路径保存并推出
+q!：不保存退出
+!ifconfig：查看配置信息
+/x：在已打开的文件中，查找x
+查找状态下：
+n：下一个字符
+shift+n：上一个字符
+s/x/X：把第一个找到的x替换成X
+%s/x/X/g：把全部的x替换成X
+3,5/s/x/X：在第三行和第五行中的x替换成X
+```
+
+## 可视模式
+
+```
+v：可视模式
+CTRL+v：块可视化模式
+I插入
+u撤销
+d删除
+CTRL+r取消撤销
+```
+
+## vim配置
+
+```shell
+#配置文件位置：/etc/vimrc
+set nohlsearch
+set nonu
+set nu
+set hlsearch
+```
+
+# 用户管理
+
+## useradd 添加用户
+
+- useradd -u 1000 user1
+  - 新增一个uid为1000的用户user1
+- useradd -g 9999 user2
+  - 新增一个user2，用户分组id为9999
+- useradd -g user1 user3
+  - 新增一个user3，用户分组名为user1
+
+```shell
+  useradd
+
+  Create a new user.
+  See also: `users`, `userdel`, `usermod`.
+  More information: https://manned.org/useradd.
+
+  - Create a new user:
+    sudo useradd username
+
+  - Create a new user with the specified user id:
+    sudo useradd --uid id username
+
+  - Create a new user with the specified shell:
+    sudo useradd --shell path/to/shell username
+
+  - Create a new user belonging to additional groups (mind the lack of whitespace):
+    sudo useradd --groups group1,group2,... username
+
+  - Create a new user with the default home directory:
+    sudo useradd --create-home username
+
+  - Create a new user with the home directory filled by template directory files:
+    sudo useradd --skel path/to/template_directory --create-home username
+
+  - Create a new system user without the home directory:
+    sudo useradd --system username
+```
+
+## userdel 删除用户
+
+- userdel -r user1
+  - 删除用户user1，并且删除他的家目录
+- userdel -rf user2
+  - 删除用户user2和他的家目录，哪怕他仍在登录当中
+
+```shell
+  userdel
+
+  Remove a user account or remove a user from a group.
+  See also: `users`, `useradd`, `usermod`.
+  More information: https://manned.org/userdel.
+
+  - Remove a user:
+    sudo userdel username
+
+  - Remove a user in other root directory:
+    sudo userdel --root path/to/other/root username
+
+  - Remove a user along with the home directory and mail spool:
+    sudo userdel --remove username
+```
+
+## groupadd 添加组
+
+- groupadd -g 999 group1
+
+```shell
+  groupadd
+
+  Add user groups to the system.
+  See also: `groups`, `groupdel`, `groupmod`.
+  More information: https://manned.org/groupadd.
+
+  - Create a new group:
+    sudo groupadd group_name
+
+  - Create a new system group:
+    sudo groupadd --system group_name
+
+  - Create a new group with the specific groupid:
+    sudo groupadd --gid id group_name
+```
+
+## groupdel 删除组
+
+```shell
+  groupdel
+
+  Delete existing user groups from the system.
+  See also: `groups`, `groupadd`, `groupmod`.
+  More information: https://manned.org/groupdel.
+
+  - Delete an existing group:
+    sudo groupdel group_name
+```
+
+## passwd 更改密码
+
+```shell
+  passwd
+
+  Passwd is a tool used to change a user's password.
+  More information: https://manned.org/passwd.
+
+  - Change the password of the current user interactively:
+    passwd
+
+  - Change the password of a specific user:
+    passwd username
+
+  - Get the current status of the user:
+    passwd -S
+
+  - Make the password of the account blank (it will set the named account passwordless):
+    passwd -d
+```
+
+## usermod 修改用户属性
+
+- usermod -l new_username username
+  - 修改用户的登录名
+- usermod -u 2999 user1
+  - 修改用户的uid
+- usermod -g group2 user1
+  - 修改用户分组
+- usermod -aG group2 user1
+  - 附加用户分组
+- usermod -L user1
+  - 锁定用户
+- usermod -U user1
+  - 解锁用户
+
+```shell
+  usermod
+
+  Modifies a user account.
+  See also: `users`, `useradd`, `userdel`.
+  More information: https://manned.org/usermod.
+
+  - Change a username:
+    sudo usermod --login new_username username
+
+  - Change a user id:
+    sudo usermod --uid id username
+
+  - Change a user shell:
+    sudo usermod --shell path/to/shell username
+
+  - Add a user to supplementary groups (mind the lack of whitespace):
+    sudo usermod --append --groups group1,group2,... username
+
+  - Change a user home directory:
+    sudo usermod --move-home --home path/to/new_home username
+```
+
+## chage 修改用户寿命
+
+```shell
+  chage
+
+  Change user account and password expiry information.
+  More information: https://manned.org/chage.
+
+  - List password information for the user:
+    chage --list username
+
+  - Enable password expiration in 10 days:
+    sudo chage --maxdays 10 username
+
+  - Disable password expiration:
+    sudo chage --maxdays -1 username
+
+  - Set account expiration date:
+    sudo chage --expiredate YYYY-MM-DD username
+
+  - Force user to change password on next log in:
+    sudo chage --lastday 0 username
+```
+
+## id 查看用户属性
+
+```shell
+  id
+
+  Display current user and group identity.
+  More information: https://www.gnu.org/software/coreutils/id.
+
+  - Display current user's ID (UID), group ID (GID) and groups to which they belong:
+    id
+
+  - Display the current user identity as a number:
+    id -u
+
+  - Display the current group identity as a number:
+    id -g
+
+  - Display an arbitrary user's ID (UID), group ID (GID) and groups to which they belong:
+    id username
+```
+
+## sudo以其他身份执行命令
+
+```shell
+  sudo
+
+  Executes a single command as the superuser or another user.
+  More information: https://www.sudo.ws/sudo.html.
+
+  - Run a command as the superuser:
+    sudo less /var/log/syslog
+
+  - Edit a file as the superuser with your default editor:
+    sudo --edit /etc/fstab
+
+  - Run a command as another user and/or group:
+    sudo --user=user --group=group id -a
+
+  - Repeat the last command prefixed with `sudo` (only in `bash`, `zsh`, etc.):
+    sudo !!
+
+  - Launch the default shell with superuser privileges and run login-specific files (`.profile`, `.bash_profile`, etc.):
+    sudo --login
+
+  - Launch the default shell with superuser privileges without changing the environment:
+    sudo --shell
+
+  - Launch the default shell as the specified user, loading the user's environment and reading login-specific files (`.profile`, `.bash_profile`, etc.):
+    sudo --login --user=user
+
+  - List the allowed (and forbidden) commands for the invoking user:
+    sudo --list
+```
+
+
+
+## 用户配置文件位置
+
+- 关于passwd文件
+  - user2：x：10000:9999::/home/user2:/bin/bash
+    - user2：用户名
+    - x：是否需要密码登录，为空则不需要密码登录
+    - 10000：uid
+    - 9999：gid
+    - 中间有一段注释
+    - /home/user2：用户家目录位置
+    - /bin/bash：用户登录用bash，为/sbin/nologin则不允许登录
+
+```shell
+#passwd保存所有的用户信息
+vim /etc/passwd
+#group保存所有的用户组信息
+vim /etc/group
+#shadow保存所有的用户密码信息
+vim /etc/shadow
+```
+
+# 文件权限
+
+## 权限类型
+
+- rwx 421
+- all a
+- user u
+- group p
+- others o
+
+## chmod 修改权限
+
+
+
+```shell
+chmod a=r /tmp/filename
+chmod u+w /tmp/filename
+chmod u-x /tmp/testfile
+chmod 755 /tmp/testfile
+```
+
+```shell
+chmod
+
+  Change the access permissions of a file or directory.
+  More information: https://www.gnu.org/software/coreutils/chmod.
+
+  - Give the [u]ser who owns a file the right to e[x]ecute it:
+    chmod u+x file
+
+  - Give the [u]ser rights to [r]ead and [w]rite to a file/directory:
+    chmod u+rw file_or_directory
+
+  - Remove e[x]ecutable rights from the [g]roup:
+    chmod g-x file
+
+  - Give [a]ll users rights to [r]ead and e[x]ecute:
+    chmod a+rx file
+
+  - Give [o]thers (not in the file owner's group) the same rights as the [g]roup:
+    chmod o=g file
+
+  - Remove all rights from [o]thers:
+    chmod o= file
+
+  - Change permissions recursively giving [g]roup and [o]thers the ability to [w]rite:
+    chmod -R g+w,o+w directory
+
+  - Recursively give [a]ll users [r]ead permissions to files and e[X]ecute permissions to sub-directories within a directory:
+    chmod -R a+rX directory
+```
+
+## chown修改所有者
+
+```shell
+  chown
+
+  Change user and group ownership of files and directories.
+  More information: https://www.gnu.org/software/coreutils/chown.
+
+  - Change the owner user of a file/directory:
+    chown user path/to/file_or_directory
+
+  - Change the owner user and group of a file/directory:
+    chown user:group path/to/file_or_directory
+
+  - Recursively change the owner of a directory and its contents:
+    chown -R user path/to/directory
+
+  - Change the owner of a symbolic link:
+    chown -h user path/to/symlink
+
+  - Change the owner of a file/directory to match a reference file:
+    chown --reference=path/to/reference_file path/to/file_or_directory
+```
+
+## chgrp修改属组
+
+```shell
+  chgrp
+
+  Change group ownership of files and directories.
+  More information: https://www.gnu.org/software/coreutils/chgrp.
+
+  - Change the owner group of a file/directory:
+    chgrp group path/to/file_or_directory
+
+  - Recursively change the owner group of a directory and its contents:
+    chgrp -R group path/to/directory
+
+  - Change the owner group of a symbolic link:
+    chgrp -h group path/to/symlink
+
+  - Change the owner group of a file/directory to match a reference file:
+    chgrp --reference=path/to/reference_file path/to/file_or_directory
+```
+
+
+
+# 网络管理
+
+## ifconfig 查看网络配置
+
+- 主要用于查看网卡的配置信息，也可以用于临时修改网卡配置信息，但是服务器重启或者网卡重启之后就会恢复设置
+
+- 修改默认的网卡名称
+
+  ```shell
+  vim /etc/default/grub
+  #grub_cmdline_linux配置项中的net.ifnames=0 biosdevname=0
+  #grub2-mkconfig -o /boot/grub2/grub.cfg
+  reboot
+  ```
+  
+- TLDR
+  ```shell
+    ifconfig
+  
+    Network Interface Configurator.
+    More information: https://net-tools.sourceforge.io/man/ifconfig.8.html.
+  
+    - View network settings of an Ethernet adapter:
+      ifconfig eth0
+  
+    - Display details of all interfaces, including disabled interfaces:
+      ifconfig -a
+  
+    - Disable eth0 interface:
+      ifconfig eth0 down
+  
+    - Enable eth0 interface:
+      ifconfig eth0 up
+  
+    - Assign IP address to eth0 interface:
+      ifconfig eth0 ip_address
+  ```
+
+## route 静态路由表配置
+
+- 通过这个命令添加的路由表是一次性的，如果需要永久有效，需要在/etc/rc.local中修改
+
+- 查看静态路由表
+
+  ```shell
+  #不带域名解析
+  route -n
+  #带域名解析
+  route
+  ```
+
+- 删除默认网关
+
+  ```shell
+  route del default gw 10.0.8.1
+  ```
+
+- 添加默认网关
+
+  ```shell
+  route add default gw 10.0.8.1
+  ```
+
+- 添加明细路由
+
+  ```shell
+  #为指定主机添加路由节点
+  route add -host 192.168.1.2 gw 192.168.1.1
+  #为指定子网添加路由节点
+  route add -net 192.168.1.0 gw 192.168.1.1 netmask 255.255.255.0
+  ```
+
+- TLDR
+
+  ```shell
+    route
+  
+    Use route cmd to set the route table.
+    More information: https://manned.org/route.
+  
+    - Display the information of route table:
+      route -n
+  
+    - Add route rule:
+      sudo route add -net ip_address netmask netmask_address gw gw_address
+  
+    - Delete route rule:
+      sudo route del -net ip_address netmask netmask_address dev gw_address
+  ```
+
+
+
+
+## ping 测试主机连通性
+
+- 发送ICMP协议包给指定的主机测试连通性
+
+  ```shell
+  #指定发送包的数量
+  ping -c 4 www.baidu.com
+  #指定每个包之间的间隔时间
+  ping -i 2 www.baidu.com
+  
+  ```
+
+- TLDR
+
+  ```shell
+    ping
+  
+    Send ICMP ECHO_REQUEST packets to network hosts.
+    More information: https://manned.org/ping.
+  
+    - Ping host:
+      ping host
+  
+    - Ping a host only a specific number of times:
+      ping -c count host
+  
+    - Ping host, specifying the interval in seconds between requests (default is 1 second):
+      ping -i seconds host
+  
+    - Ping host without trying to lookup symbolic names for addresses:
+      ping -n host
+  
+    - Ping host and ring the bell when a packet is received (if your terminal supports it):
+      ping -a host
+  
+    - Also display a message if no response was received:
+      ping -O host
+  ```
+
+## traceroute 路由节点跟踪
+
+- 主要使用形式
+
+  ```shell
+  traceroute -m 10 www.baidu.com # 跳数设置 
+  traceroute -n www.baidu.com # 显示IP地址，不查主机名 
+  traceroute -p 6888 www.baidu.com # 探测包使用的基本UDP端口设置6888 
+  traceroute -q 4 www.baidu.com # 把探测包的个数设置为值4 
+  traceroute -r www.baidu.com # 绕过正常的路由表，直接发送到网络相连的主机 
+  traceroute -w 3 www.baidu.com # 把对外发探测包的等待响应时间设置为3秒
+  ```
+
+- TLDR
+
+  ```shell
+    traceroute
+  
+    Print the route packets trace to network host.
+    More information: https://manned.org/traceroute.
+  
+    - Traceroute to a host:
+      traceroute host
+  
+    - Disable IP address and host name mapping:
+      traceroute -n host
+  
+    - Specify wait time for response:
+      traceroute -w 0.5 host
+  
+    - Specify number of queries per hop:
+      traceroute -q 5 host
+  
+    - Specify size in bytes of probing packet:
+      traceroute host 42
+  ```
+
+## mtr ping和traceroute的结合
+
+- TLDR
+
+  ```shell
+    mtr
+  
+    Matt's Traceroute: combined traceroute and ping tool.
+    More information: https://bitwizard.nl/mtr.
+  
+    - Traceroute to a host and continuously ping all intermediary hops:
+      mtr host
+  
+    - Disable IP address and host name mapping:
+      mtr -n host
+  
+    - Generate output after pinging each hop 10 times:
+      mtr -w host
+  
+    - Force IP IPv4 or IPV6:
+      mtr -4 host
+  
+    - Wait for a given time (in seconds) before sending another packet to the same hop:
+      mtr -i seconds host
+  
+  ```
+
+## nslookup 域名查询
+
+- 域名服务器配置文件
+
+  ```shell
+  #/etc/resolv.conf
+  ```
+
+- 查询指定域名的IP地址
+
+  ```shell
+  nslookup www.baidu.com
+  ```
+
+- TLDR
+
+  ```shell
+    nslookup
+  
+    Query name server(s) for various domain records.
+    More information: https://manned.org/nslookup.
+  
+    - Query your system's default name server for an IP address (A record) of the domain:
+      nslookup example.com
+  
+    - Query a given name server for a NS record of the domain:
+      nslookup -type=NS example.com 8.8.8.8
+  
+    - Query for a reverse lookup (PTR record) of an IP address:
+      nslookup -type=PTR 54.240.162.118
+  
+    - Query for ANY available records using TCP protocol:
+      nslookup -vc -type=ANY example.com 
+  
+    - Query a given name server for the whole zone file (zone transfer) of the domain using TCP protocol:
+      nslookup -vc -type=AXFR example.com name_server
+  
+    - Query for a mail server (MX record) of the domain, showing details of the transaction:
+      nslookup -type=MX -debug example.com
+  
+    - Query a given name server on a specific port number for a TXT record of the domain:
+      nslookup -port=port_number -type=TXT example.com name_server
+  
+  ```
+
+## telnet 登录远程主机和管理
+
+- telnet的相关配置
+
+  ```
+  man xinetd.conf
+  ```
+
+  - 启动telnet服务
+
+    ```
+    service xinetd restart
+    ```
+
+  - 常用配置参数
+
+    ```
+    service telnet
+    {
+    	disable = no #启用
+    	flags = REUSE#socket #可重用
+    	socket_type = stream #链接方式为TCP
+    	wait = no #为每个请求单独启动一个进程
+    	user = root #启动服务的用户为root
+    	server = /usr/sbin/in.telnetd #要激活的进程
+    	log_on_failure += USERID #记录登录失败的用户名
+    }
+    ```
+
+  - 配置允许登录的用户IP
+
+    ```
+    only_from = 192.168.1.2 #只允许192.168.1.1进行telnet登录
+    ```
+
+  - 配置禁止登录的用户IP
+
+    ```
+    no_access = 192.168.1.{3, 4, 5} #禁止192.168.1.3-5登录
+    ```
+
+  - 配置可以登录的时间段
+
+    ```
+    access_time = 9:00-12:00 13:00-17:00 #每天只有这两个时间段可以登录
+    ```
+
+  - 绑定指定的IP地址登录
+
+    ```
+    bind = 192.168.1.2
+    ```
+
+- 配置端口
+
+  ```
+  vim /etc/services
+  telnet 23/tcp
+  telnet 23/udp
+  ```
+
+- TLDR
+
+  ```shell
+    telnet
+  
+    Connect to a specified port of a host using the telnet protocol.
+    More information: https://manned.org/telnet.
+  
+    - Telnet to the default port of a host:
+      telnet host
+  
+    - Telnet to a specific port of a host:
+      telnet ip_address port
+  
+    - Exit a telnet session:
+      quit
+  
+    - Emit the default escape character combination for terminating the session:
+      Ctrl + ]
+  
+    - Start telnet with "x" as the session termination character:
+      telnet -e x ip_address port
+  
+    - Telnet to Star Wars animation:
+      telnet towel.blinkenlights.nl
+  ```
+
+## tcpdump 抓包指令
+
+- 直接启动tcpdump监听第一个网络接口上所有流经的数据包
+
+  ```shell
+  #如果不指定监听的网络接口，则默认监听第一个网络接口，一般是eth0
+  tcpdump
+  ```
+
+- 监视指定网络接口的数据包
+
+  ```shell
+  tcpdump -i eth1
+  ```
+
+- 监听指定主机的数据包
+
+  ```shell
+  #打印所有进入或离开hostname的数据包
+  tcpdump host hostname
+  #也可以指定IP进行监听
+  tcpdump host 192.168.1.2
+  #监听helios与hot或者与ace之间的通信数据包
+  tcpdump host helios and \( hot or ace \)
+  #监听192.168.1.1与192.168.1.2或与192.168.1.3之间的通信数据包
+  tcpdump host 192.168.1.1 and \( 192.168.1.2 or 192.168.1.3 \)
+  #监听192.168.1.1与除192.168.1.2外的其他主机的通信数据包
+  tcpdump host 192.168.1.1 and ! 192.168.1.2
+  #监听eth0上所有来自主机hostname的数据包
+  tcpdump -i eth0 src host hostname
+  #监听eth0上所有去往主机hostname的数据包
+  tcpdump -i eth0 dst host hostname
+  ```
+
+- 监听指定主机和端口的数据包
+
+  ```shell
+  #监听主机210.27.48.1接受或发出的telnet数据包（一般是tcp协议，端口23）
+  tcpdump host 210.27.48.1 and tcp port 23
+  #监听本机UDP协议的123端口
+  tcpdump udp port 123
+  ```
+
+- 监听指定网络的数据包
+
+  ```shell
+  #监听本地主机与ucb-ether网络上的主机之间的数据包
+  tcpdump net ucb-ether
+  #监听所有通过网关snup的ftp数据包
+  tcpdump 'gateway snup and ( port ftp or ftp-date )'
+  #监听所有源地址或目标地址是本地主机的IP数据包
+  tcpdump ip and not net localnet
+  #监听80端口的HTTP报文
+  tcpdump -i any port 80 -A
+  ```
+
+- TLDR
+
+  ```shell
+    tcpdump
+  
+    Dump traffic on a network.
+    More information: https://www.tcpdump.org.
+  
+    - List available network interfaces:
+      tcpdump -D
+  
+    - Capture the traffic of a specific interface:
+      tcpdump -i eth0
+  
+    - Capture all TCP traffic showing contents (ASCII) in console:
+      tcpdump -A tcp
+  
+    - Capture the traffic from or to a host:
+      tcpdump host www.example.com
+  
+    - Capture the traffic from a specific interface, source, destination and destination port:
+      tcpdump -i eth0 src 192.168.1.1 and dst 192.168.1.2 and dst port 80
+  
+    - Capture the traffic of a network:
+      tcpdump net 192.168.1.0/24
+  
+    - Capture all traffic except traffic over port 22 and save to a dump file:
+      tcpdump -w dumpfile.pcap port not 22
+  
+    - Read from a given dump file:
+      tcpdump -r dumpfile.pcap
+  ```
+
+## netstat 查看网络状态
+
+- 列出所有端口（包括监听和未监听的）
+
+  ```shell
+  netstat -a  #列出所有端口
+  netstat -at #列出所有tcp端口
+  netstat -au #列出所有udp端口
+  ```
+
+- 列出所有处于监听状态的SOCKETS
+
+  ```shell
+  netstat -l  #只显示监听状态的端口
+  netstat -lt #只显示所有监听状态的tcp端口
+  netstat -lu #只显示所有监听状态的udp端口
+  netstat -lx #只显示所有监听状态的unix端口
+  ```
+
+- 显示每个协议的统计信息
+
+  ```shell
+  netstat -s  #显示所有端口的统计信息
+  netstat -st #显示tcp端口的统计信息
+  netstat -su #显示udp端口的统计信息
+  netstat -pt #显示tcp端口的进程信息
+  ```
+
+- 取消域名解析
+
+  ```shell
+  netstat -n
+  ```
+
+- 持续显示netstat信息
+
+  ```shell
+  netstat -c
+  ```
+
+- 显示核心路由信息
+
+  ```shell
+  netstat -r #作用同route
+  ```
+
+- 显示网络接口列表
+
+  ```shell
+  netstat -i
+  netstat -ie #作用同ifconfig
+  ```
+
+- 显示指定程序的运行端口
+
+  ```shell
+  netstat -ap | grep ssh
+  ```
+
+- 显示指定端口所运行的程序进程
+
+  ```shell
+  netstat -ap | grep ':23'
+  ```
+
+- 通过指定端口找到运行的程序ID
+
+  ```shell
+  netstat -anp | grep 8081 | grep LISTEN | awk '{printf $7}' | cut -d/ -f1
+  ```
+
+- 查看连接某服务端口最多的IP地址
+
+  ```shell
+  netstat -ntu | grep :80 | awk '{print $5}' | cut -d: -f1 | 
+  awk '{++ip[$1]} END {for(i in ip) print ip[i], "\t", i}' | sort -nr
+  ```
+
+- tcp各种状态列表
+
+  ```shell
+  netstat -nt | grep -e 127.0.0.1 -e 0.0.0.0 -e ::: -v |
+  awk '/^tcp/ {++state[$NF]} END {for(i in state) print i, "\t", state[i]}'
+  ```
+
+- 查看stdout进程数
+
+  ```shell
+  netstat -anpo | grep 'stdout' | wc -l
+  ```
+
+- TLDR
+
+  ```shell
+    netstat
+  
+    Displays network-related information such as open connections, open socket ports, etc.
+    More information: https://man7.org/linux/man-pages/man8/netstat.8.html.
+  
+    - List all ports:
+      netstat --all
+  
+    - List all listening ports:
+      netstat --listening
+  
+    - List listening TCP ports:
+      netstat --tcp
+  
+    - Display PID and program names:
+      netstat --program
+  
+    - List information continuously:
+      netstat --continuous
+  
+    - List routes and do not resolve IP addresses to hostnames:
+      netstat --route --numeric
+  
+    - List listening TCP and UDP ports (+ user and process if you're root):
+      netstat --listening --program --numeric --tcp --udp --extend
+  ```
+
+
+
+
+## 网络配置文件
+
+- 主机名称配置文件
+
+  ```shell
+  #修改主机名称
+  hostnamectl set-hostname centos7.test
+  #需要在/etc/hosts中添加映射
+  127.0.0.1 Robotinx Robotinx
+  ```
+
+- 网卡配置文件
+
+  ```shell
+  /etc/sysconfig/network-scipts/ifcfg-eth0
+  
+  1. TYPE=Ethernet  
+  #  网络类型 Ethernet 以太网
+   
+  2. PROXY_METHOD=none    
+  #  代理方式
+   
+  3. BROWSER_ONLY=no 
+  #  只是浏览器：否
+   
+  4. BOOTPROTO=none 
+  #  网卡协议 获取网卡IP的方式
+  #  dhcp：    动态主机配置协议
+  #  static：  手动配置固定IP
+  #  none：    手动配置固定IP
+   
+  5. DEFROUTE=yes
+  #  默认路由：是  
+  #  如果IP数据包中的目的地址找不到存在的其他路由时，
+  #  路由器会默认的选择路由
+   
+  6. IPV4_FAILURE_FATAL=no 
+  #  是否开启IPV4致命错误检测：否
+   
+  7. PV6INIT=yes 
+  #  IPV6初始化: 是
+   
+  8. IPV6_AUTOCONF=yes
+  #  IPV6是否自动配置：是
+   
+  9. IPV6_DEFROUTE=yes
+  #  IPV6 默认路由：是  
+   
+  10. IPV6_FAILURE_FATAL=no 
+  #  是否开启IPV6致命错误检测：否
+   
+  11. IPV6_ADDR_GEN_MODE=stable-privacy 
+  #  IPV6地址生成模型  stable-privacy:一种生成IPV6的策略
+   
+  12. NAME=ens33 
+  #  网卡名称
+   
+  13. UUID=ce12bd82-d2c1-4425-8e16-ff976f178200
+  #  唯一标识码
+   
+  14. DEVICE=ens33
+  #  网卡设备名称
+   
+  15. ONBOOT=yes 
+  #  在开机或重启时是否启动网卡
+   
+  16. IPADDR=192.168.2.121
+  #  手动配置静态ip地址
+   
+  17. NETMASK=255.255.255.0
+  #  子网掩码
+   
+  18. GATEWAY=192.168.2.1
+  #  默认网关
+   
+  19. DNS1=8.8.8.8
+  #  dns域名解析服务器
+   
+  重启网卡服务命令
+  service network restart
+  ```
+  
+- DNS服务器配置文件
+
+  ```shell
+  /etc/resolv.conf
+  ```
+
+- service自动控制服务名
+
+  ```
+  /etc/init.d
+  ```
+
+
+
+## 常用的网络端口
+
+>
+>
+>常用端口号与对应的服务
+>
+>HTTP：80
+>HTTPS:443
+>FTP：21
+>TELNET.TCP：23
+>TFTP:69
+>SMTP:25
+>DNS:53
+
+
+
+  # 软件管理
+
+## rpm 软件包管理工具
+
+- 软件包全名mysql-3.23.54a-11
+
+- 查询系统中安装了的包
+
+  ```shell
+  #将所有安装过的包都列出来
+  rpm -qa
+  #只显示带有关键字mysql的包
+  rpm -qa | grep mysql
+  #查询某个软件包的全名
+  rpm -q mysql
+  #查询某个软件包安装目录
+  rpm -ql mysql
+  #查询可执行文件的位置
+  which mysql
+  #查询某个文件属于哪个软件包
+  rpm -qf /usr/bin/mysql
+  #卸载某个软件包
+  rpm -e mysql
+  #查询某个软件包的信息
+  rpm -i mysql
+  ```
+
+- TLDR
+
+  ```shell
+    rpm
+  
+    RPM Package Manager.
+    More information: https://rpm.org/.
+  
+    - Show version of httpd package:
+      rpm -q httpd
+  
+    - List versions of all matching packages:
+      rpm -qa 'mariadb*'
+  
+    - Forcibly install a package regardless of currently installed versions:
+      rpm -U package_name.rpm --force
+  
+    - Identify owner of a file and show version of the package:
+      rpm -qf /etc/postfix/main.cf
+  
+    - List package-owned files:
+      rpm -ql kernel
+  
+    - Show scriptlets from an RPM file:
+      rpm -qp --scripts package_name.rpm
+  
+    - Show changed, missing and/or incorrectly installed files of matching packages:
+      rpm -Va 'php-*'
+  ```
+
+  
+
+## yum 基于RPM的软件包管理器
+
+### 配置yum源
+
+- 备份原来的文件
+
+  ```shell
+  mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+  ```
+
+- 下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/
+
+  ```shell
+  wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-8.5.2111.repo
+  ```
+
+- 更新缓存
+
+  ```shell
+  yum clean all
+  yum makecache
+  ```
+
+### yum相关指令
+
+- 安装
+
+  ```shell
+  #全部安装
+  yum install
+  #安装指定的包
+  yum install mysql
+  #安装程序组
+  yum groupinstall group1
+  ```
+
+- 更新和升级
+
+  ```shell
+  #全部更新
+  yum update
+  #更新指定的程序包
+  yum update mysql
+  #检查可更新的程序
+  yum check-update
+  #升级指定程序包
+  yum upgrade mysql
+  #升级指定程序组
+  yum groupupgrade group1
+  ```
+
+- 查找和显示
+
+  ```shell
+  #检查mysql是否已经安装
+  yum list installed | grep mysql
+  yum list installed mysql*
+  #显示安装包信息
+  yum info mysql
+  #显示所有包
+  yum list
+  #显示指定包名的安装情况
+  yum list mysql
+  #显示指定程序包组的安装信息
+  yum groupinfo group1
+  ```
+
+- 删除程序
+
+  ```shell
+  #删除程序包httpd
+  yum remove httpd
+  yum erase httpd
+  #删除程序组group1
+  yum groupremove group1
+  #查看程序包的依赖情况
+  yum deplist package1
+  ```
+
+- 清除缓存
+
+  ```shell
+  #清除缓存目录下的软件包
+  yum clean packages
+  #清除缓存目录下的headers
+  yum clean headers
+  ```
+
+- TLDR
+
+  ```SHELL
+    yum
+  
+    Package management utility for RHEL, Fedora, and CentOS (for older versions).
+    More information: https://manned.org/yum.
+  
+    - Install a new package:
+      yum install package
+  
+    - Install a new package and assume yes to all questions (also works with update, great for automated updates):
+      yum -y install package
+  
+    - Find the package that provides a particular command:
+      yum provides command
+  
+    - Remove a package:
+      yum remove package
+  
+    - Display available updates for installed packages:
+      yum check-update
+  
+    - Upgrade installed packages to the newest available versions:
+      yum upgrade
+  ```
+
+## 内核升级
+
+- 查看系统版本
+
+  ```shell
+  #查看CPU信息
+  lscpu
+  #查看发行版本
+  cat /etc/redhat-release
+  #查看系统版本信息
+  cat /proc/version
+  uname -a
+  #操作系统信息
+  cat /etc/os-release
+  ```
+
+- 下载新版本内核
+
+  ```shell
+  #导入ELRepo软件仓库的公共秘钥
+  rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+  #安装ELRepo软件仓库的yum源
+  rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+  #安装主线内核（ml=mainline）4.14.11
+  yum --enablerepo=elrepo-kernel install kernel-ml
+  #查看系统可用内核，因为是通过yum下载的内核，所以用yum查看
+  #如果是自己用源码编译的内核，主要看自己编译时放在哪个文件夹，当然建议是放在/usr/src/kernels文件夹下
+  yum list installed | grep kernel
+  #设置默认内核
+  grub2-set-default 0
+  #生成 grub 配置文件
+  grub2-mkconfig -o /boot/grub2/grub.cfg
+  #重启系统并查看内核版本
+  reboot
+  uname -a
+  cat /proc/version
+  ```
+
+## uname 查看系统信息
+
+- TLDR
+
+  ```shell
+    uname
+  
+    Print details about the current machine and the operating system running on it.
+    See also `lsb_release`.
+    More information: https://www.gnu.org/software/coreutils/uname.
+  
+    - Print kernel name:
+      uname
+  
+    - Print system architecture and processor information:
+      uname --machine --processor
+  
+    - Print kernel name, kernel release and kernel version:
+      uname --kernel-name --kernel-release --kernel-version
+  
+    - Print system hostname:
+      uname --nodename
+  
+    - Print all available system information:
+      uname --all
+  ```
+
+
+
+
+## 安装jdk
+
+```shell
+which java
+
+cd /usr/bin
+
+mv /usr/bin/java /usr/bin/java.bak
+
+
+rpm -qa | grep java
+rpm -ql java-11-openjdk-headless-11.0.12.0.7-0.el8_4.x86_64
+
+ls -lrt /usr/bin/java
+ls -lrt /etc/alternatives/java
+cd /etc/alternatives/java
+
+
+
+sudo yum install java-11-openjdk -y
+
+rpm -qa | grep java
+
+rpm -ql java-11-openjdk-headless-11.0.12.0.7-0.el8_4.x86_64
+
+cd /usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/bin
+
+pwd
+
+/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/bin
+
+cp /etc/profile /etc/profile.bak
+
+vim /etc/profile
+
+export JAVA_HOME=/usr/lib/jvm
+export PATH=$PATH:$JAVA_HOME/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/bin
+#export PATH=$PATH:/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/bin
+
+source /etc/profile
+
+java -version
+```
+
+
+
+>>>>>>> 8485e0921075ab509aca57062752c6c33e495881
 # 进程管理
 
 ## ps 查看当前系统的进程状态
@@ -1735,6 +3697,7 @@ do
 done
 ```
 
+<<<<<<< HEAD
 ```shell
 #抓取脚本路径下除index.html外的html文件，将他们做成超链接插入到index.html中
 #!/bin/bash
@@ -1757,6 +3720,8 @@ echo
 done
 ```
 
+=======
+>>>>>>> 8485e0921075ab509aca57062752c6c33e495881
 
 
 ```shell

@@ -85,6 +85,3 @@ listen       80;
 	}
 
 /usr/local/nginx/sbin/nginx -s reload
-
-
-/opt/games/lifeRestart
