@@ -21,9 +21,12 @@ main        # 全局配置，对全局生效
 │   ├── upstream # 配置后端服务器具体地址，负载均衡配置不可或缺的部分
 │   ├── server   # 配置虚拟主机的相关参数，一个 http 块中可以有多个 server 块
 │   ├── server
+│   │   ├── listen
+│   │   ├── server_name
 │   │   ├── location  # server 块可以包含多个 location 块，location 指令用于匹配 uri
 │   │   ├── location
-│   │   └── ...
+│   │   ├── ...
+│   │   └──error_page
 │   └── ...
 └── ...
 ```
