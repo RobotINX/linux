@@ -1743,7 +1743,11 @@ chmod
 - 下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/
 
   ```shell
+  Centos 8:
   wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-8.5.2111.repo
+  
+  Centos 7:
+  wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
   ```
 
 - 更新缓存
@@ -3239,7 +3243,7 @@ SELINUX=disabled
 - 实例
 
   ```shell
-  #查看CPU装填
+  #查看CPU状态
   sar -u 1 10
   #查看内存状态
   sar -r 1 10
@@ -5175,5 +5179,4 @@ $ firewall-cmd --add-service=https --permanent
 /usr/lib/firewalld/zones/
 参考博客:https://juejin.cn/post/6994679433470869511
 ```
-
 

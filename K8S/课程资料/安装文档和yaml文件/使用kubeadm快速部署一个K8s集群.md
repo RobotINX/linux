@@ -37,6 +37,17 @@ systemctl disable firewalld
 sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
 setenforce 0  # 临时
 
+#查看SELinux状态的命令
+getenforce
+/usr/sbin/sestatus
+#临时关闭SELinux
+setenforce 0
+#SELinux配置文件
+/etc/selinux/config
+#配置中关闭SELinux
+SELINUX=disabled
+
+
 # 关闭swap
 swapoff -a  # 临时
 sed -ri 's/.*swap.*/#&/' /etc/fstab    # 永久
@@ -176,7 +187,6 @@ $ kubectl get pod,svc
 ```
 
 访问地址：http://NodeIP:Port  
-
 
 
 
