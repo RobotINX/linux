@@ -7,7 +7,7 @@ https://www.jianshu.com/p/7ba146fc720c
 
 
 
-![git_workflow](D:\RobotINX\Desktop\linux\img\git_workflow.png)
+![git_workflow](.\img\git_workflow.png)
 
 
 
