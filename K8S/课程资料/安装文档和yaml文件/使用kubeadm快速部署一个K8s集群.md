@@ -190,3 +190,91 @@ $ kubectl get pod,svc
 
 
 
+# 8.coreDNS报错ContainerCreating
+
+使用`kubectl get pods -n kube-system`检查各pod的状态发现coredns有ContainerCreating的提示
+
+```shell
+[root@master .kube]# kubectl get pods -n kube-system
+NAME                             READY   STATUS              RESTARTS   AGE
+coredns-7ff77c879f-m6dr8         0/1     ContainerCreating   0          48s
+coredns-7ff77c879f-mdcf4         0/1     ContainerCreating   0          48s
+etcd-master                      1/1     Running             0          60s
+kube-apiserver-master            1/1     Running             0          60s
+kube-controller-manager-master   1/1     Running             0          60s
+kube-proxy-dq2g2                 1/1     Running             0          48s
+kube-scheduler-master            1/1     Running             0          60s
+```
+
+```shell
+[root@master flannel]# kubectl describe pods coredns-7ff77c879f-m6dr8 -n kube-system
+  Warning  FailedCreatePodSandBox  5m46s (x4 over 5m49s)  kubelet, master    (combined from similar events): Failed to create pod sandbox: rpc error: code = Unknown desc = failed to set up sandbox container "40739d05d9db3b0ed23c395f78b1bb5a7ec5bc1d6c60fa762ff3b1f2aa56ac5a" network for pod "coredns-7ff77c879f-m6dr8": networkPlugin cni failed to set up pod "coredns-7ff77c879f-m6dr8_kube-system" network: open /run/flannel/subnet.env: no such file or directory
+  Normal   SandboxChanged          57s (x289 over 5m57s)  kubelet, master    Pod sandbox changed, it will be killed and re-created.
+```
+
+根据日志发现是因为缺少了一个`/run/flannel/subnet.env`文件
+
+百度之后发现这个文件的内容大致如下
+
+```shell
+FLANNEL_NETWORK=10.244.0.0/16
+FLANNEL_SUBNET=10.244.0.1/24
+FLANNEL_MTU=1450
+FLANNEL_IPMASQ=true
+```
+
+重新启动kubelet服务
+
+```shell
+systemctl restart kubelet
+```
+
+再次查看相关的节点状态发现已经回复正常
+
+```shell
+[root@master flannel]# kubectl get pods -n kube-system
+NAME                             READY   STATUS    RESTARTS   AGE
+coredns-7ff77c879f-m6dr8         1/1     Running   0          10m
+coredns-7ff77c879f-mdcf4         1/1     Running   0          10m
+etcd-master                      1/1     Running   0          10m
+kube-apiserver-master            1/1     Running   0          10m
+kube-controller-manager-master   1/1     Running   0          10m
+kube-proxy-dq2g2                 1/1     Running   0          10m
+kube-scheduler-master            1/1     Running   0          10m
+```
+
+
+
+# 9.flannel提示protocol not available
+
+```shell
+[root@master flannel]# kubectl get pods -n kube-system
+NAME                             READY   STATUS    RESTARTS   AGE
+coredns-7ff77c879f-m6dr8         1/1     Running   0          13m
+coredns-7ff77c879f-mdcf4         1/1     Running   0          13m
+etcd-master                      1/1     Running   0          13m
+kube-apiserver-master            1/1     Running   0          13m
+kube-controller-manager-master   1/1     Running   0          13m
+kube-flannel-ds-qrhmx            0/1     Error     2          24s
+kube-proxy-dq2g2                 1/1     Running   0          13m
+kube-scheduler-master            1/1     Running   0          13m
+```
+
+通过`kubectl logs -f kube-flannel-ds-qrhmx -n kube-system`发现发错
+
+```shell
+[root@master flannel]# kubectl logs -f kube-flannel-ds-qrhmx -n kube-system
+I0529 14:46:13.008480       1 main.go:207] CLI flags config: {etcdEndpoints:http://127.0.0.1:4001,http://127.0.0.1:2379 etcdPrefix:/coreos.com/network etcdKeyfile: etcdCertfile: etcdCAFile: etcdUsername: etcdPassword: version:false kubeSubnetMgr:true kubeApiUrl: kubeAnnotationPrefix:flannel.alpha.coreos.com kubeConfigFile: iface:[] ifaceRegex:[] ipMasq:true ifaceCanReach: subnetFile:/run/flannel/subnet.env publicIP: publicIPv6: subnetLeaseRenewMargin:60 healthzIP:0.0.0.0 healthzPort:0 iptablesResyncSeconds:5 iptablesForwardRules:true netConfPath:/etc/kube-flannel/net-conf.json setNodeNetworkUnavailable:true}
+W0529 14:46:13.008577       1 client_config.go:614] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0529 14:46:13.107440       1 kube.go:121] Waiting 10m0s for node controller to sync
+I0529 14:46:13.107513       1 kube.go:398] Starting kube subnet manager
+I0529 14:46:14.108338       1 kube.go:128] Node controller sync successful
+I0529 14:46:14.108353       1 main.go:227] Created subnet manager: Kubernetes Subnet Manager - master
+I0529 14:46:14.108357       1 main.go:230] Installing signal handlers
+I0529 14:46:14.108430       1 main.go:463] Found network config - Backend type: vxlan
+I0529 14:46:14.108457       1 match.go:195] Determining IP address of default interface
+E0529 14:46:14.108516       1 main.go:270] Failed to find any valid interface to use: failed to get default interface: protocol not available
+```
+
+
+
