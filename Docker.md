@@ -127,7 +127,7 @@ You must delete any edited configuration files manually.
 
 ### 图解
 
-![docker_command](D:\RobotINX\Desktop\linux\img\docker_command.png)
+![docker_command](.\img\docker_command.png)
 
 ### 参考文档
 
@@ -1280,7 +1280,7 @@ docker run -d -p 8088:9000 \
 >
 >4、每一个指令都会创建提交一个新的镜像层并提交
 
- ![docker_image1](D:\RobotINX\Desktop\linux\img\docker_image1.png)
+ ![docker_image1](.\img\docker_image1.png)
 
 
 
@@ -1477,7 +1477,7 @@ docker run -d -p 8088:9000 \
 
 ### dockers镜像管理
 
-![docker_image2](D:\RobotINX\Desktop\linux\img\docker_image2.png)
+![docker_image2](.\img\docker_image2.png)
 
 >
 >
@@ -1505,7 +1505,7 @@ docker run -d -p 8088:9000 \
 
 ### 关于docker0
 
-![docker_net1](D:\RobotINX\Desktop\linux\img\docker_net1.png)
+![docker_net1](.\img\docker_net1.png)
 
 - 在没有容器的情况下查看本机ip地址，会发现有一个docker0的网卡
 
@@ -1628,7 +1628,7 @@ docker run -d -p 8088:9000 \
   >
   >6、启动中的容器和主机之间都是能互通
 
-![docker_net1](D:\RobotINX\Desktop\linux\img\docker_net1.png)
+![docker_net1](.\img\docker_net1.png)
 
 ### docker network 查看网络配置
 
