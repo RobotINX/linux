@@ -66,6 +66,87 @@
 
 
 
+# kubernetes集群环境搭建
+
+## 环境搭建
+
+## 环境要求
+
+在开始之前，部署Kubernetes集群机器需要满足以下几个条件：
+
+- 一台或多台机器，操作系统 CentOS7.x-86_x64
+- 硬件配置：2GB或更多RAM，2个CPU或更多CPU，硬盘30GB或更多
+- 可以访问外网，需要拉取镜像，如果服务器不能上网，需要提前下载镜像并导入节点
+- 关闭防火墙
+- 关闭SELinux
+- 修改主机名
+- 添加hosts
+- 禁止swap分区
+- 流量桥接
+- IP设置
+- 更换
+- 时间同步
+
+
+
+| 角色   | IP              |
+| ------ | --------------- |
+| master | 192.168.100.100 |
+| node1  | 192.168.100.101 |
+| node2  | 192.168.100.102 |
+
+
+
+```shell
+# 关闭防火墙
+systemctl stop firewalld
+systemctl disable firewalld
+
+# 关闭selinux
+sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
+setenforce 0  # 临时
+
+#查看SELinux状态的命令
+getenforce
+/usr/sbin/sestatus
+#临时关闭SELinux
+setenforce 0
+#SELinux配置文件
+/etc/selinux/config
+#配置中关闭SELinux
+SELINUX=disabled
+
+
+# 关闭swap
+swapoff -a  # 临时
+sed -ri 's/.*swap.*/#&/' /etc/fstab    # 永久
+
+# 根据规划设置主机名
+hostnamectl set-hostname <hostname>
+
+# 在master添加hosts
+cat >> /etc/hosts << EOF
+192.168.44.146 k8smaster
+192.168.44.145 k8snode1
+192.168.44.144 k8snode2
+EOF
+
+# 将桥接的IPv4流量传递到iptables的链
+cat > /etc/sysctl.d/k8s.conf << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system  # 生效
+
+# 时间同步
+yum install ntpdate -y
+ntpdate time.windows.com
+```
+
+
+
+### 主机安装
+
 
 
 
