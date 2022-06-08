@@ -68,7 +68,64 @@
 
 # kubernetes集群环境搭建
 
-## 环境搭建
+## 更新内核
+
+- 查看当前系统的版本
+
+  ```shell
+  cat /etc/redhat-release
+  ```
+
+- 查看当前系统的内核
+
+  ```shell
+  uname -sr
+  ```
+
+- 在CentOS 7.x 上启用ELRepo仓库
+
+  ```shell
+  rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+  rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+  ```
+
+- 查看可用的系统内核相关包
+
+  ```shell
+  yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
+  ```
+
+- 安装最新主线内核版本
+
+  ```shell
+  yum -y enablerepo=elrepo-kernel install kernel-ml
+  ```
+
+- 设置默认的内核版本
+
+  ```shell
+  vim /etc/default/grub
+  ```
+
+  ```shell
+  GRUB_TIMEOUT=5
+  GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+  GRUB_DEFAULT=0 # 修改此处，原来是 saved
+  GRUB_DISABLE_SUBMENU=true
+  GRUB_TERMINAL_OUTPUT="console"
+  GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"
+  GRUB_DISABLE_RECOVERY="true"
+  ```
+
+- 重新创建内核配置
+
+  ```shell
+  grub2-mkconfig -o /boot/grub2/grub.cfg
+  ```
+
+- 重启并查看内核版本即可
+
+
 
 ## 环境要求
 
@@ -84,7 +141,6 @@
 - 禁止swap分区
 - 流量桥接
 - IP设置
-- 更换
 - 时间同步
 
 
@@ -131,13 +187,6 @@ cat >> /etc/hosts << EOF
 192.168.44.144 k8snode2
 EOF
 
-# 将桥接的IPv4流量传递到iptables的链
-cat > /etc/sysctl.d/k8s.conf << EOF
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-sysctl --system  # 生效
-
 # 时间同步
 yum install ntpdate -y
 ntpdate time.windows.com
@@ -145,13 +194,376 @@ ntpdate time.windows.com
 
 
 
-### 主机安装
+## 流量桥接
+
+- 文件配置
+
+  ```shell
+  # 将桥接的IPv4流量传递到iptables的链
+  echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+  echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.conf
+  echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
+  echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+  echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+  echo "net.ipv6.conf.lo.disable_ipv6 = 1" >> /etc/sysctl.conf
+  echo "net.ipv6.conf.all.forwarding = 1"  >> /etc/sysctl.conf
+  sysctl --system  # 生效
+  ```
+
+- 加载br_netfilter模块
+
+  ```shell
+  modprobe br_netfilter
+  ```
+
+- 持久化
+
+  ```shell
+  sysctl --system
+  sysctl -p
+  ```
+
+  
+
+## 开启ipvs
+
+- 安装ipset和ipvsadm
+
+  ```shell
+  yum install -y ipset ipvsadm
+  ```
+
+- 模块脚本
+
+  ```shell
+  cat > /etc/sysconfig/modules/ipvs.modules <<EOF
+  #!/bin/bash
+  modprobe -- ip_vs
+  modprobe -- ip_vs_rr
+  modprobe -- ip_vs_wrr
+  modprobe -- ip_vs_sh
+  modprobe -- nf_conntrack
+  EOF
+  ```
+
+- 授权并运行脚本
+
+  ```shell
+  chmod +x ipvs.modules
+  bash ipvs.modules
+  ```
+
+- 查看插件
+
+  ```shell
+  lsmod | grep -e ip_vs -e nf_conntrack
+  ```
+
+  
+
+# 安装kubernetes
+
+## 安装镜像源
+
+- 添加docker的阿里云镜像源
+
+  ```shell
+  cd /etc/yum.repo
+  wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+  ```
+
+- 添加kubernetes的阿里云镜像源
+
+  ```shell
+  cat > /etc/yum.repos.d/kubernetes.repo << EOF
+  [kubernetes]
+  name=Kubernetes
+  baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+  enabled=1
+  gpgcheck=0
+  repo_gpgcheck=0
+  gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+  EOF
+  ```
+
+- 更新软件包索引
+
+  ```shell
+  yum makecache
+  ```
 
 
 
+## 安装docker并配置
+
+- 查看docker的版本
+
+  ```shell
+  yum list docker-ce --showduplicates | sort -r
+  ```
+
+- 安装指定版本的docker
+
+  ```shell
+  yum -y install docker-ce-3:20.10.8-3.el7.x86_64 docker-ce-cli-3:20.10.8-3.el7.x86_64 containerd.io
+  ```
+
+- 启动docker服务
+  ```shell
+  systemctl start docker
+  systemctl enable docker
+  ```
+
+- 设置阿里云镜像加速
+
+  ```shell
+  mkdir -p /etc/docker
+  sudo tee /etc/docker/daemon.json <<-'EOF'
+  {
+    "exec-opts": ["native.cgroupdriver=systemd"],	
+    "registry-mirrors": [
+      "https://du3ia00u.mirror.aliyuncs.com",
+      "https://hub-mirror.c.163.com",
+      "https://mirror.baidubce.com"
+    ],
+    "live-restore": true,
+    "log-driver":"json-file",
+    "log-opts": {"max-size":"500m", "max-file":"3"},
+    "max-concurrent-downloads": 10,
+    "max-concurrent-uploads": 5,
+    "storage-driver": "overlay2"
+  }
+  EOF
+  ```
+
+  ```shell
+  systemctl daemon-reload
+  ```
+
+  ```shell
+  systemctl restart docker
+  ```
 
 
 
+## 安装kubernetes
+
+- 指定版本安装
+
+  ```shell
+  yum install -y kubelet-1.21.10 kubeadm-1.21.10 kubectl-1.21.10
+  ```
+
+- 修改cgroup driver的设置
+
+  ```shell
+  vim /etc/sysconfig/kubelet
+  # 修改
+  KUBELET_EXTRA_ARGS="--cgroup-driver=systemd"
+  KUBE_PROXY_MODE="ipvs"
+  ```
+
+- 启动kubelet
+
+  ```shell
+  systemctl start kubelet
+  systemctl enable kubelet
+  ```
+
+
+
+## 下载镜像所需文件
+
+- 查看安装所需文件
+
+  ```shell
+  kubeadm config images list
+  ```
+
+- 下载安装所需文件
+
+  ```shell
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.21.10
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.21.10
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.21.10
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.21.10
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.4.1
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:3.4.13-0
+  docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:v1.8.0
+  ```
+
+- 给coredns重新打tag
+
+  ```shell
+  docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:v1.8.0 registry.cn-hangzhou.aliyuncs.com/google_containers/coredns/coredns:v1.8.0
+  ```
+
+  
+
+## 部署master节点
+
+- 在节点上部署master节点
+
+  ```shell
+  # 由于默认拉取镜像地址k8s.gcr.io国内无法访问，这里需要指定阿里云镜像仓库地址
+  kubeadm init \
+    --apiserver-advertise-address=192.168.100.101 \
+    --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers \
+    --kubernetes-version=v1.21.10 \
+    --service-cidr=10.96.0.0/16 \
+    --pod-network-cidr=10.244.0.0/16
+  ```
+
+- 根据提示复制配置
+
+  ```shell
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  ```
+
+- 关于添加node节点的token
+
+```shell
+# 生成一个新的token
+kubeadm token create --print-join-command
+# 生成一个永不过期的token
+kubeadm token create --ttl 0 --print-join-command
+```
+
+
+
+## 部署网络插件
+
+- 部署指令
+
+  ```shell
+  kubectl apply -f https://projectcalico.docs.tigera.io/v3.19/manifests/calico.yaml
+  ```
+
+- 查看进度
+
+  ```shell
+  kubectl get pods -n kube-system
+  ```
+
+  
+
+## 查看节点状态
+
+```shell
+kubectl get nodes
+```
+
+
+
+## 设置kube-proxy的ipvs模式
+
+```shell
+kubectl edit cm kube-proxy -n kube-system
+```
+
+```shell
+apiVersion: v1
+data:
+  config.conf: |-
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    bindAddress: 0.0.0.0
+    bindAddressHardFail: false
+    clientConnection:
+      acceptContentTypes: ""
+      burst: 0
+      contentType: ""
+      kubeconfig: /var/lib/kube-proxy/kubeconfig.conf
+      qps: 0
+    clusterCIDR: 10.244.0.0/16
+    configSyncPeriod: 0s
+    conntrack:
+      maxPerCore: null
+      min: null
+      tcpCloseWaitTimeout: null
+      tcpEstablishedTimeout: null
+    detectLocalMode: ""
+    enableProfiling: false
+    healthzBindAddress: ""
+    hostnameOverride: ""
+    iptables:
+      masqueradeAll: false
+      masqueradeBit: null
+      minSyncPeriod: 0s
+      syncPeriod: 0s
+    ipvs:
+      excludeCIDRs: null
+      minSyncPeriod: 0s
+      scheduler: ""
+      strictARP: false
+      syncPeriod: 0s
+      tcpFinTimeout: 0s
+      tcpTimeout: 0s
+      udpTimeout: 0s
+    kind: KubeProxyConfiguration
+    metricsBindAddress: ""
+    mode: ""
+    nodePortAddresses: null
+      minSyncPeriod: 0s
+      syncPeriod: 0s
+    ipvs:
+      excludeCIDRs: null
+      minSyncPeriod: 0s
+      scheduler: ""
+      strictARP: false
+      syncPeriod: 0s
+      tcpFinTimeout: 0s
+      tcpTimeout: 0s
+      udpTimeout: 0s
+    kind: KubeProxyConfiguration
+    metricsBindAddress: ""
+    mode: "ipvs" # 修改此处
+...
+```
+
+```shell
+kubectl delete pod -l k8s-app=kube-proxy -n kube-system
+```
+
+
+
+## 让node节点也能用kubectl
+
+```shell
+# 192.168.65.101 和 192.168.65.102
+mkdir -pv ~/.kube
+touch ~/.kube/config
+```
+
+```shell
+# 192.168.65.100
+scp /etc/kubernetes/admin.conf root@192.168.65.101:~/.kube/config
+```
+
+
+
+## 部署nginx
+
+- 部署nginx
+
+  ```shell
+  kubectl create deployment nginx --image=nginx:1.14-alpine
+  ```
+
+- 暴露端口
+
+  ```shell
+  kubectl expose deployment nginx --port=80 --type=NodePort
+  ```
+
+- 查看服务状态
+
+  ```shell
+  kubectl get pods,svc
+  ```
+
+  
 
 
 
